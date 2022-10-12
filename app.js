@@ -34,6 +34,11 @@ app.use('/api/v1/service', ServiceRoute)
 app.use('/api/v1/portifolio', ProfileRoute)
 app.use('/api/v1/prod', Prod)
 // require('/api/v1/Prod')(app)
+app.use(express.static(path.join(__dirname, "/myechelon_website/build")));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/myechelon_website/build', 'index.html'));
+});
 
 app.listen(port, ()=>{
     console.log(`App is runnng on http://locolhost:${port}`)
