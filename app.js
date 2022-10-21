@@ -24,7 +24,6 @@ app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
 app.use(cors());
-app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json())
 
@@ -33,12 +32,6 @@ app.use('/api/v1/message', MessageRoute)
 app.use('/api/v1/service', ServiceRoute)
 app.use('/api/v1/portifolio', ProfileRoute)
 app.use('/api/v1/prod', Prod)
-// require('/api/v1/Prod')(app)
-app.use(express.static(path.join(__dirname, "/myechelon_website/build")));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/myechelon_website/build', 'index.html'));
-});
 
 app.listen(port, ()=>{
     console.log(`App is runnng on http://locolhost:${port}`)

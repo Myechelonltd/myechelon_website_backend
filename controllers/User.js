@@ -32,6 +32,7 @@ const createUser = async (req, res) => {
       image: image,
       isAdmin: isAdmin,
     });
+
     const findUser = await User.findOne({ email: email });
     if (findUser) return sendError(res, 409, null, "This email address exist ");
     const emailExpression =
@@ -55,6 +56,7 @@ const createUser = async (req, res) => {
       subject: "Congratulations, welcome Mychelon.",
       message,
     });
+    
     const userSaved = await newUser.save();
     return success(res, 201, null, "Email Sent successfully 👍🏾")
   } catch (error) {
@@ -113,6 +115,25 @@ const updatedUser = async (req, res) => {
   }
 }
 
+const changeUserPass = async (req, res) => {
+  try {
+      var id = req.params.id;
+      let {password,confirmPassword} = req.body;
+      if(password !=confirmPassword) return fail(res,400,"Password doens't match")
+      let data = await User.findOneAndUpdate({ _id: id },
+           {password: hashPassword(password)} );
+      const findeUpdateUser = await User.findOne({ _id: id });
+      if (findeUpdateUser) {
+          return success(res,200,"Password Changed successful",findeUpdateUser);
+      }
+      else {
+          return fail(res,400,"User doens't exist",null );
+      }
+  } catch (error) {
+      res.status(200).json({ status: 'fail', message: error });
+  }
+}
+
 const userLogin = (req, res, next) => {
   User.find({ email: req.body.email })
     .select("password email isAdmin image")
@@ -147,7 +168,7 @@ const userLogin = (req, res, next) => {
           return res.status(200).json({ status: 'success', user, token, message: 'Welcome 👍🏾' });
         }
         res.status(401).json({
-          message: "Auth failed"
+          message: "invalid credential"
         });
       });
     })
@@ -216,4 +237,14 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { createUser, getUsers, getUser, deletedUser, updatedUser, userLogin, forgetPassword, resetPassword };
+module.exports = { 
+  createUser,
+  getUsers,
+  getUser,
+  deletedUser,
+  updatedUser,
+  changeUserPass,
+  userLogin,
+  forgetPassword,
+  resetPassword
+};

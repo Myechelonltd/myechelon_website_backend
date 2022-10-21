@@ -1,5 +1,5 @@
 const router = require("express").Router();
-module.exports = { createService, getServices, getService, deleteService, updateService } = require('../controllers/Service')
+const { createService, getServices, getService, deleteService, updateService } = require('../controllers/Service')
 
 const { verifyToken, verifyTokenAndAdmin } = require('../middleware/verifyToken')
 
